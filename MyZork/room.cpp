@@ -15,8 +15,8 @@ void Room::setDescription(string aDescription) {
 	description = aDescription;
 }
 
-void Room::addItem(string item) {
-	items.push_back(item);
+void Room::addItem(const Item item) {
+	room_inventory.addItem(item);
 }
 
 void Room::addDoor(Directions door) { 
@@ -31,24 +31,25 @@ void Room::addDoor(Directions door) {
 		doors.push_back(door);
 }
 
-list<string> Room::getItems() {
-	return items;
+list<string> Room::getItems() const {
+	return room_inventory.getItemsNames();
 }
 
-list<Directions> Room::getDoors() {
+list<Directions> Room::getDoors() const {
 	return doors;
 }
 
-string Room::toString() {
+string Room::toString() const {
 	string result = "";
 
 	result += name + "\n";
 	result += description + "\n";
 	result += "Objetos en la habitacion: \n";
-	for (list<string>::iterator it = items.begin(); it != items.end(); ++it)
+	list<string> itemsNames = getItems();
+	for (list<string>::const_iterator it = itemsNames.begin(); it != itemsNames.end(); ++it)
 		result += *it + "\n";
 	result += "Direcciones a las que NO puedes navegar: \n";
-	for (list<Directions>::iterator it = doors.begin(); it != doors.end(); ++it)
+	for (list<Directions>::const_iterator it = doors.begin(); it != doors.end(); ++it)
 	{
 		switch (*it)
 		{

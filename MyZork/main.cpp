@@ -21,3 +21,5 @@ int main() {
 
 	return 0;
 }
+
+//TODO: Probar cómo ordena el multimap intentando insertar varios items de forma desordenada y ver como hace el output.
