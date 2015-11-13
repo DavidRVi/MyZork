@@ -1,11 +1,14 @@
 #include "inventory.h"
 
 void Inventory::addItem(const Item anItem) {
-	items.insert(anItem);
+	if (items.find(anItem.first) == items.end())
+		items.insert(anItem);
 }
 
-void Inventory::removeItem(const std::string itemName) {
+Item Inventory::removeItem(const std::string itemName) {
+	Item result = *(items.find(itemName));
 	items.erase(itemName);
+	return result;
 }
 
 const std::list<std::string> Inventory::getItemsNames() const {
@@ -23,4 +26,8 @@ const available_actions Inventory::getAvailableActions(const std::string itemNam
 		result = p->second;
 	
 	return result;
+}
+
+Item Inventory::getItem(const std::string itemName) const {
+	return *(items.find(itemName));
 }

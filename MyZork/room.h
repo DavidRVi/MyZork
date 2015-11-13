@@ -26,6 +26,7 @@ public:
 	list<string> getItems() const;
 	list<Directions> getDoors() const;
 	string toString() const;
+	Item removeItem(const string itemName); //Removes an item from room inventory and return it.
 };
 
 #endif

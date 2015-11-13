@@ -1,25 +1,48 @@
 #include <iostream>
 #include "room.h"
+#include "character.h"
 using namespace std;
 
 int main() {
 	Room *r1 = new Room("Habitacion Test");
-	r1->setDescription("Una habitacion perfectamente vacia");
+	r1->setDescription("Testing pick & drop, try to pick and drop some things!");
 
+	Character *player = new Character();
 	bool game_exit = false;
 	int n;
-	while (!game_exit)
+	string inputstr = "";
+	cout << "Welcome to MyZork, version 0.15" << endl;
+	r1->addItem(Item("Mazo", { PICK, DROP }));
+	r1->addItem(Item("Adefesio", { PICK, DROP }));
+	r1->addItem(Item("Nota", { PICK, DROP, READ }));
+	do 
 	{
-		cout << "Bienvenido a MyZork, version 0.1" << endl;
 		string habitacion = r1->toString();
-		cout << habitacion;
-		cin >> n;
-		if (n == -1)
+		cout << habitacion << endl;
+		cout << ">";
+		getline(cin, inputstr);
+		if (inputstr.find("quit") != string::npos)
 			game_exit = true;
-	}
+		if (inputstr.find("pick") != string::npos)
+		{
+			Item toPick = r1->removeItem("Adefesio");
+			player->pickItem(toPick);
+		}
+		if (inputstr.find("inventory") != string::npos)
+		{
+			list<string> player_inventory = player->getInventoryList();
+			for (list<string>::const_iterator it = player_inventory.begin(); it != player_inventory.end(); ++it)
+				cout << *it << endl;
+		}
+		
+
+
+		
+		inputstr == "";
+	} while (!game_exit);
 
 
 	return 0;
 }
 
-//TODO: Probar cómo ordena el multimap intentando insertar varios items de forma desordenada y ver como hace el output.
+//TODO: Pick & drop functionality
