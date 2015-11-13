@@ -23,7 +23,7 @@ void Room::addDoor(Door door) {
 	bool found = false;
 	for (list<Door>::const_iterator it = doors.begin(); it != doors.end() && !found; ++it)
 	{
-		if (door == *it)
+		if (door.first == it->first)
 			found = true;
 	}
 
@@ -37,6 +37,23 @@ list<string> Room::getItems() const {
 
 list<Door> Room::getDoors() const {
 	return doors;
+}
+
+int Room::isDoor(Directions dir) const {
+	bool exists = false;
+	int roomIndex = -1;
+	for (list<Door>::const_iterator it = doors.begin(); it != doors.end() && !exists; it++)
+	{
+		if (it->first == dir)
+		{
+			exists = true;
+			roomIndex = it->second;
+		}
+	}
+
+	if (exists)
+		return roomIndex;
+	else return roomIndex;
 }
 
 string Room::toString() const {

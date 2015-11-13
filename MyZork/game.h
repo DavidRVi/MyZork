@@ -19,6 +19,7 @@ private:
 	void processUserInput(const string userInput);
 	void doAction(const Actions action);
 	string describeRoom(const int roomIndex);
+	Directions getDirection(const string object);		//Get a Direction corresponding to a string describing the direction
 
 	void doGo();
 	void doQuit();

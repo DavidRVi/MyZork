@@ -1,7 +1,7 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-enum Directions { NORTH, SOUTH, WEST, EAST };
+enum Directions { NORTH, SOUTH, WEST, EAST, NODIRECTION };
 
 enum Actions { GO, PICK, DROP, READ, BREAK, QUIT, NOACTION };
 

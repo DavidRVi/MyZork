@@ -1,5 +1,12 @@
 #include <iostream>
 #include "game.h"
+
+/*
+Author: David Ruiz Vallejo
+Personal implementation in C++ of the known game "Zork"
+
+
+*/
 using namespace std;
 
 int main() {

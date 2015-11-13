@@ -26,6 +26,7 @@ public:
 	list<Door> getDoors() const;
 	string toString() const;
 	Item removeItem(const string itemName); //Removes an item from room inventory and return it.
+	int isDoor(const Directions dir) const; //Returns the index of the room that is in the given Direction if there's a door in that direction
 };
 
 #endif

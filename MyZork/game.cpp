@@ -30,6 +30,10 @@ void Game::initializeGame() {
 	room_list[0].addItem(Item("Note", { PICK, DROP, READ }));
 	room_list[0].addItem(Item("Mirror", { BREAK }));
 
+	room_list[0].addDoor(Door(SOUTH, 1));
+	room_list.push_back(Room("South Room", "This room is south of the hall room."));
+	room_list[1].addDoor(Door(NORTH, 0));
+
 
 	cout << "**********  Welcome to MyZork, version " << VERSION << "********** " << endl;
 	cout << "\n";
@@ -98,7 +102,38 @@ void Game::doQuit() {
 }
 
 void Game::doGo() {
+	Directions directionToGo;
+	directionToGo = getDirection(object);
+	
+	int toRoom = room_list[current_room].isDoor(directionToGo);
+	if ( toRoom >= 0)
+	{
+		current_room = toRoom;
+		cout << describeRoom(current_room);
+	}
+	/*else if(object == "") {
+		string dir;
+		cout << "Which direction do you want to go to?" << endl;
+		cout << ">";
+		getline(cin, dir);
+		directionToGo = getDirection(dir);
+	}*/
+	else cout << "You can't go to that direction." << endl;
+	
+}
 
+Directions Game::getDirection(const string object)
+{
+	Directions directionToGo = NODIRECTION;
+	if (!object.empty())
+	{
+		if (object == "north") directionToGo = NORTH;
+		else if (object == "east") directionToGo = EAST;
+		else if (object == "west") directionToGo = WEST;
+		else if (object == "south") directionToGo = SOUTH;
+	}
+
+	return directionToGo;
 }
 
 void Game::doPick() {
