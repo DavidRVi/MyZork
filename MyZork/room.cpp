@@ -19,9 +19,9 @@ void Room::addItem(const Item item) {
 	room_inventory.addItem(item);
 }
 
-void Room::addDoor(Directions door) { 
+void Room::addDoor(Door door) { 
 	bool found = false;
-	for (list<Directions>::iterator it = doors.begin(); it != doors.end() && !found; ++it)
+	for (list<Door>::const_iterator it = doors.begin(); it != doors.end() && !found; ++it)
 	{
 		if (door == *it)
 			found = true;
@@ -35,7 +35,7 @@ list<string> Room::getItems() const {
 	return room_inventory.getItemsNames();
 }
 
-list<Directions> Room::getDoors() const {
+list<Door> Room::getDoors() const {
 	return doors;
 }
 
@@ -48,10 +48,10 @@ string Room::toString() const {
 	list<string> itemsNames = getItems();
 	for (list<string>::const_iterator it = itemsNames.begin(); it != itemsNames.end(); ++it)
 		result += *it + "\n";
-	result += "Direcciones a las que NO puedes navegar: \n";
-	for (list<Directions>::const_iterator it = doors.begin(); it != doors.end(); ++it)
+	result += "Direcciones a las que puedes navegar: \n";
+	for (list<Door>::const_iterator it = doors.begin(); it != doors.end(); ++it)
 	{
-		switch (*it)
+		switch ((*it).first)
 		{
 		case(NORTH) : result += "Norte\n"; break;
 		case(SOUTH) : result += "Sur\n"; break;

@@ -1,8 +1,8 @@
 #include "inventory.h"
 
 void Inventory::addItem(const Item anItem) {
-	if (items.find(anItem.first) == items.end())
-		items.insert(anItem);
+	//if (items.find(anItem.first) == items.end())
+	items.insert(anItem);
 }
 
 Item Inventory::removeItem(const std::string itemName) {

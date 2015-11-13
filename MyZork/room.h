@@ -5,7 +5,7 @@
 #include <list>
 #include "utils.h"
 #include "inventory.h"
-//Nota: no poner tildes.
+
 using namespace std;
 
 class Room
@@ -15,16 +15,15 @@ private:
 	string description;
 
 	Inventory room_inventory;
-	list<Directions> doors;
-
+	list<Door> doors;
 public:
 	Room(string aName);
 	Room(string aName, string aDescription);
 	void setDescription(const string aDescription);
 	void addItem(const Item item);		//Add a given item
-	void addDoor(const Directions door); //Add a door in a direction, and check there's no door before in that direction
+	void addDoor(const Door door); //Add a door in a direction, and check there's no door before in that direction
 	list<string> getItems() const;
-	list<Directions> getDoors() const;
+	list<Door> getDoors() const;
 	string toString() const;
 	Item removeItem(const string itemName); //Removes an item from room inventory and return it.
 };
