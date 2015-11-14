@@ -13,5 +13,9 @@ void Character::pickItem(const Item anItem) {
 }
 
 Item Character::dropItem(const std::string itemName) {
-	return c_inventory.getItem(itemName);
+	Item result = c_inventory.getItem(itemName);
+	if (result.first != "NOITEM")
+		c_inventory.removeItem(itemName);
+	
+	return result;
 }

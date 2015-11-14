@@ -27,8 +27,8 @@ void Game::initializeGame() {
 		"there's a little table beneath the mirror with a note, \n"
 		"you see an iron door in the east wall, \n"
 		"and a wooden door in the south wall."));
-	room_list[0].addItem(Item("Note", { PICK, DROP, READ }));
-	room_list[0].addItem(Item("Mirror", { BREAK }));
+	room_list[0].addItem(Item("note", { PICK, DROP, READ }));
+	room_list[0].addItem(Item("mirror", { BREAK }));
 
 	room_list[0].addDoor(Door(SOUTH, 1));
 	room_list.push_back(Room("South Room", "This room is south of the hall room."));
@@ -103,22 +103,25 @@ void Game::doQuit() {
 
 void Game::doGo() {
 	Directions directionToGo;
-	directionToGo = getDirection(object);
-	
-	int toRoom = room_list[current_room].isDoor(directionToGo);
-	if ( toRoom >= 0)
+	if (object != verb)
 	{
-		current_room = toRoom;
-		cout << describeRoom(current_room);
+		directionToGo = getDirection(object);
+
+		int toRoom = room_list[current_room].isDoor(directionToGo);
+		if (toRoom >= 0)
+		{
+			current_room = toRoom;
+			cout << describeRoom(current_room);
+		}
+		else cout << "You can't go to that direction." << endl;
 	}
-	/*else if(object == "") {
-		string dir;
+	else
+	{
 		cout << "Which direction do you want to go to?" << endl;
 		cout << ">";
-		getline(cin, dir);
-		directionToGo = getDirection(dir);
-	}*/
-	else cout << "You can't go to that direction." << endl;
+		getline(cin, object);
+		doGo();
+	}
 	
 }
 
@@ -137,11 +140,35 @@ Directions Game::getDirection(const string object)
 }
 
 void Game::doPick() {
-
+	if (object != verb)
+	{
+		Item toPick = room_list[current_room].removeItem(object);
+		if (toPick.first != "NOITEM")
+			player->pickItem(toPick);
+		else cout << "You can't pick that item";
+	}
+	else {
+		cout << "Which item do you want to pick?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doPick();
+	}
 }
 
 void Game::doDrop() {
-
+	if (object != verb)
+	{
+		Item toDrop = player->dropItem(object);
+		if (toDrop.first != "NOITEM")
+			room_list[current_room].addItem(toDrop);
+		else cout << "You can't drop that item";
+	}
+	else {
+		cout << "Which item do you want to drop?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doDrop();
+	}
 }
 
 void Game::doRead() {

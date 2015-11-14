@@ -80,6 +80,6 @@ string Room::toString() const {
 	return result;
 }
 
-Item Room::removeItem(const string itemName){
+Item Room::removeItem(const string itemName) {
 	return room_inventory.removeItem(itemName);
 }

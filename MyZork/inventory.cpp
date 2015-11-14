@@ -6,8 +6,24 @@ void Inventory::addItem(const Item anItem) {
 }
 
 Item Inventory::removeItem(const std::string itemName) {
-	Item result = *(items.find(itemName));
-	items.erase(itemName);
+	Item result = Item("NOITEM", {});
+	t_inventory::iterator it = items.find(itemName);
+	if (it != items.end())
+	{
+		bool pickable = false;
+		for (available_actions::const_iterator it2 = it->second.begin(); it2 != it->second.end() && !pickable; it2++)
+		{
+			if (*it2 == PICK)
+				pickable = true;
+		}
+		if (pickable)
+		{
+			result = *it;
+			items.erase(itemName);
+		}
+
+	}
+	
 	return result;
 }
 
@@ -29,5 +45,9 @@ const available_actions Inventory::getAvailableActions(const std::string itemNam
 }
 
 Item Inventory::getItem(const std::string itemName) const {
-	return *(items.find(itemName));
+	Item result = Item( "NOITEM", {} );
+	if (items.find(itemName) != items.end())
+		result = *(items).find(itemName);
+
+	return result;
 }
