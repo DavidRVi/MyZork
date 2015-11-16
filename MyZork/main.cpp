@@ -16,4 +16,4 @@ int main() {
 	return 0;
 }
 
-//TODO: Item class
+//TODO: Read items

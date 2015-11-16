@@ -13,6 +13,7 @@ public:
 	void pickItem(const Item anItem);
 	Item dropItem(const std::string itemName);
 	const std::string readItem(const std::string itemName) const;
+	Item getItem(const std::string itemName) const;
 };
 
 #endif

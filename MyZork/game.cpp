@@ -1,6 +1,9 @@
 #include "game.h"
+#include "corridor.h"
+#include "hallRoom.h"
 #include <iostream>
 #include <sstream>
+#include <list>
 
 #define VERSION 0.2
 
@@ -21,28 +24,24 @@ void Game::initializeGame() {
 	gameActive = false;
 	current_room = 0;
 	player = new Character();
-	room_list.push_back(new Room("Hall Room", 
-		"You're in a room with white walls all around it, \n"
-		"in the north wall you can see yourself reflected in a human-size mirror, \n"
-		"there's a small table beneath the mirror with a note, \n"
-		"you see an iron door in the east wall, \n"
-		"and a wooden door in the south wall."));
+	room_list.push_back(new HallRoom());
 	room_list[0]->addItem(Item("note", { PICK, DROP, READ }));
 	room_list[0]->addItem(Item("mirror", { BREAK }));
 
 	room_list[0]->addDoor(Door(SOUTH, 1));
-	room_list.push_back(new HallRoom("South Room", "This room is south of the hall room."));
+	room_list.push_back(new Corridor());
 	room_list[1]->addDoor(Door(NORTH, 0));
+	room_list[1]->addItem(Item("hammer", { PICK, DROP, BREAK }));
 
 
-	cout << "**********  Welcome to MyZork, version " << VERSION << "********** \n\n";
+	cout << "**********  Welcome to MyZork, version " << VERSION << " ********** \n\n";
 }
 
 void Game::playGame() {
 	gameActive = true;
 
 	string userInput;
-	cout << describeRoom(current_room);
+	cout << describeRoom(current_room) << endl;
 
 	//----------- GAME LOOP -----------------
 	do{
@@ -72,6 +71,7 @@ void Game::processUserInput(const string userInput) {
 		current_action = GO;
 	else if (verb == "pick") current_action = PICK;
 	else if (verb == "drop") current_action = DROP;
+	else if (verb == "see") current_action = SEE;
 	else if (verb == "read") current_action = READ;
 	else if (verb == "break") current_action = BREAK;
 	else if (verb == "quit") current_action = QUIT;
@@ -86,13 +86,15 @@ void Game::doAction(const Actions action) {
 	case DROP: doDrop(); break;
 	case READ: doRead(); break;
 	case BREAK: doBreak(); break;
+	case SEE: doSee(); break;
 	case NOACTION: doNothing(); break;
 	default: doNothing();
 	}
 }
 
 void Game::doNothing() {
-	cout << "Couldn't understand what you want to do: please use a verb that the game understands." << endl;
+	cout << "Couldn't understand what you want to do: \n"
+		"please use a verb that the game understands." << endl;
 }
 
 void Game::doQuit() {
@@ -110,13 +112,13 @@ void Game::doGo() {
 		if (toRoom >= 0)
 		{
 			current_room = toRoom;
-			cout << describeRoom(current_room);
+			cout << "\n" << describeRoom(current_room) << endl;
 		}
 		else cout << "You can't go to that direction." << endl;
 	}
 	else
 	{
-		cout << "Which direction do you want to go to?" << endl;
+		cout << "\nWhich direction do you want to go to?\n" << endl;
 		cout << ">";
 		getline(cin, object);
 		doGo();
@@ -141,10 +143,15 @@ Directions Game::getDirection(const string object)
 void Game::doPick() {
 	if (object != verb)
 	{
-		Item toPick = room_list[current_room]->removeItem(object);
+		Item toPick = room_list[current_room]->getPickItem(object);
 		if (toPick.first != "NOITEM")
+		{
+			toPick = room_list[current_room]->removeItem(object);
 			player->pickItem(toPick);
-		else cout << "You can't pick that item";
+			room_list[current_room]->changeState(toPick.first);
+			cout << "You picked the " << toPick.first << "." << endl;
+		}
+		else cout << "You can't pick that item" << endl;
 	}
 	else {
 		cout << "Which item do you want to pick?" << endl;
@@ -170,6 +177,32 @@ void Game::doDrop() {
 	}
 }
 
+void Game::doSee() {
+	if (object != verb)
+	{
+		if (object.compare("inventory") == 0)
+		{
+			list<string> inv = player->getInventoryList();
+			for (list<string>::const_iterator it = inv.begin(); it != inv.end(); ++it)
+				cout << *it << endl;
+		}
+		else if (object.compare("room") == 0)
+		{
+			list<string> inv = room_list[current_room]->getItems();
+			for (list<string>::const_iterator it = inv.begin(); it != inv.end(); ++it)
+				cout << *it << endl;
+		}
+		else cout << "You can't do that" << endl;
+
+	}
+	else {
+		cout << "Which item do you want to see?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doSee();
+	}
+}
+
 void Game::doRead() {
 	/*if (object != verb)
 	{
@@ -184,7 +217,42 @@ void Game::doRead() {
 }
 
 void Game::doBreak() {
+	if (object != verb)
+	{
+		Item toBreak = room_list[current_room]->getItem(object);
+		if (toBreak.first != "NOITEM")
+		{
+			cout << "What do you want to break the " << object << " with?" << endl;
+			cout << ">";
+			getline(cin, object);
+			Item result = player->getItem(object);
+			bool found = false;
+			for (available_actions::const_iterator it = result.second.begin(); it != result.second.end() && !found; ++it)
+			{
+				if (*it == BREAK)
+					found = true;
+			}
 
+			if (found)
+			{
+				room_list[current_room]->changeState(toBreak.first);
+				room_list[current_room]->removeItem(toBreak.first);
+				cout << "You broke the " << toBreak.first << " with the " << object << endl;
+			}
+			else
+			{
+				cout << "You can't break the " << toBreak.first << " with a " << object << endl;
+				return;
+			}
+		}
+		else cout << "You can't break the " << object << endl;
+	}
+	else {
+		cout << "What do you want to break?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doBreak();
+	}
 }
 
 string Game::describeRoom(const int roomIndex){

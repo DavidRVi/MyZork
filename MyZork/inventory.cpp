@@ -5,9 +5,9 @@ void Inventory::addItem(const Item anItem) {
 	items.insert(anItem);
 }
 
-Item Inventory::removeItem(const std::string itemName) {
+Item Inventory::getPickItem(const std::string itemName) const {
 	Item result = Item("NOITEM", {});
-	t_inventory::iterator it = items.find(itemName);
+	t_inventory::const_iterator it = items.find(itemName);
 	if (it != items.end())
 	{
 		bool pickable = false;
@@ -17,13 +17,23 @@ Item Inventory::removeItem(const std::string itemName) {
 				pickable = true;
 		}
 		if (pickable)
-		{
 			result = *it;
-			items.erase(itemName);
-		}
 
 	}
 	
+	return result;
+}
+
+Item Inventory::removeItem(const std::string itemName) {
+	Item result = Item("NOITEM", {});
+	t_inventory::iterator it = items.find(itemName);
+	if (it != items.end())
+	{
+		result = *it;
+		items.erase(itemName);
+	}
+		
+
 	return result;
 }
 

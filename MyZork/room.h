@@ -27,7 +27,10 @@ public:
 	list<Door> getDoors() const;
 	virtual string toString() const;
 	Item removeItem(const string itemName); //Removes an item from room inventory and return it.
+	Item getItem(const string itemName) const; //Get an item
+	Item getPickItem(const string itemName) const; //Get an item if it has PICK action
 	int isDoor(const Directions dir) const; //Returns the index of the room that is in the given Direction if there's a door in that direction
+	virtual void changeState(const string itemName);	//Change state of the room depending on the item interaction
 };
 
 #endif

@@ -14,6 +14,7 @@ public:
 	HallRoom(const string aName, const string aDescription);
 	~HallRoom(){};
 	string toString() const;
+	void changeState(const string itemName);
 };
 
 #endif

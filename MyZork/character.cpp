@@ -37,3 +37,7 @@ const std::string Character::readItem(const std::string itemName) const {
 	else return "";
 
 }
+
+Item Character::getItem(const std::string itemName) const {
+	return c_inventory.getItem(itemName);
+}

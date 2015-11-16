@@ -59,28 +59,22 @@ int Room::isDoor(Directions dir) const {
 
 string Room::toString() const {
 	string result = "";
-
 	result += "======== " + name + " ========\n";
-	result += description + "\n";
-	result += "Items in the room: \n";
-	list<string> itemsNames = getItems();
-	for (list<string>::const_iterator it = itemsNames.begin(); it != itemsNames.end(); ++it)
-		result += *it + "\n";
-	result += "Directions you can travel to: \n";
-	for (list<Door>::const_iterator it = doors.begin(); it != doors.end(); ++it)
-	{
-		switch ((*it).first)
-		{
-		case(NORTH) : result += "North\n"; break;
-		case(SOUTH) : result += "South\n"; break;
-		case(EAST) : result += "East\n"; break;
-		case(WEST) : result += "West\n"; break;
-		}
-	}
-
+	result += description;
+	result += "\n\n";
 	return result;
 }
 
+void Room::changeState(const string itemName) {}
+
 Item Room::removeItem(const string itemName) {
 	return room_inventory.removeItem(itemName);
+}
+
+Item Room::getItem(const string itemName) const{
+	return room_inventory.getItem(itemName);
+}
+
+Item Room::getPickItem(const string itemName) const{
+	return room_inventory.getPickItem(itemName);
 }

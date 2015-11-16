@@ -3,7 +3,6 @@
 
 #include "character.h"
 #include "room.h"
-#include "hallRoom.h"
 #include <vector>
 
 class Game {
@@ -28,6 +27,7 @@ private:
 	void doDrop();
 	void doRead();
 	void doBreak();
+	void doSee();
 	void doNothing();
 public:
 	Game();
