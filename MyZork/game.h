@@ -3,11 +3,12 @@
 
 #include "character.h"
 #include "room.h"
+#include "hallRoom.h"
 #include <vector>
 
 class Game {
 private:
-	vector<Room> room_list;
+	vector<Room*> room_list;
 	Character *player;
 	int current_room;
 	Actions current_action;

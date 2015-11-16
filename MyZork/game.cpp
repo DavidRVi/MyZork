@@ -21,22 +21,21 @@ void Game::initializeGame() {
 	gameActive = false;
 	current_room = 0;
 	player = new Character();
-	room_list.push_back(Room("Hall Room", 
+	room_list.push_back(new Room("Hall Room", 
 		"You're in a room with white walls all around it, \n"
 		"in the north wall you can see yourself reflected in a human-size mirror, \n"
-		"there's a little table beneath the mirror with a note, \n"
+		"there's a small table beneath the mirror with a note, \n"
 		"you see an iron door in the east wall, \n"
 		"and a wooden door in the south wall."));
-	room_list[0].addItem(Item("note", { PICK, DROP, READ }));
-	room_list[0].addItem(Item("mirror", { BREAK }));
+	room_list[0]->addItem(Item("note", { PICK, DROP, READ }));
+	room_list[0]->addItem(Item("mirror", { BREAK }));
 
-	room_list[0].addDoor(Door(SOUTH, 1));
-	room_list.push_back(Room("South Room", "This room is south of the hall room."));
-	room_list[1].addDoor(Door(NORTH, 0));
+	room_list[0]->addDoor(Door(SOUTH, 1));
+	room_list.push_back(new HallRoom("South Room", "This room is south of the hall room."));
+	room_list[1]->addDoor(Door(NORTH, 0));
 
 
-	cout << "**********  Welcome to MyZork, version " << VERSION << "********** " << endl;
-	cout << "\n";
+	cout << "**********  Welcome to MyZork, version " << VERSION << "********** \n\n";
 }
 
 void Game::playGame() {
@@ -107,7 +106,7 @@ void Game::doGo() {
 	{
 		directionToGo = getDirection(object);
 
-		int toRoom = room_list[current_room].isDoor(directionToGo);
+		int toRoom = room_list[current_room]->isDoor(directionToGo);
 		if (toRoom >= 0)
 		{
 			current_room = toRoom;
@@ -142,7 +141,7 @@ Directions Game::getDirection(const string object)
 void Game::doPick() {
 	if (object != verb)
 	{
-		Item toPick = room_list[current_room].removeItem(object);
+		Item toPick = room_list[current_room]->removeItem(object);
 		if (toPick.first != "NOITEM")
 			player->pickItem(toPick);
 		else cout << "You can't pick that item";
@@ -160,7 +159,7 @@ void Game::doDrop() {
 	{
 		Item toDrop = player->dropItem(object);
 		if (toDrop.first != "NOITEM")
-			room_list[current_room].addItem(toDrop);
+			room_list[current_room]->addItem(toDrop);
 		else cout << "You can't drop that item";
 	}
 	else {
@@ -172,7 +171,16 @@ void Game::doDrop() {
 }
 
 void Game::doRead() {
-
+	/*if (object != verb)
+	{
+		Item toRead = player->
+	}
+	else {
+		cout << "What do you want to read?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doRead();
+	}*/
 }
 
 void Game::doBreak() {
@@ -180,5 +188,5 @@ void Game::doBreak() {
 }
 
 string Game::describeRoom(const int roomIndex){
-	return room_list[current_room].toString();
+	return room_list[current_room]->toString();
 }

@@ -1,17 +1,17 @@
 #include "room.h"
 
-Room::Room(string aName)
+Room::Room(const string aName)
 {
 	name = aName;
 }
 
-Room::Room(string aName, string aDescription)
+Room::Room(const string aName, const string aDescription)
 {
 	name = aName;
 	description = aDescription;
 }
 
-void Room::setDescription(string aDescription) {
+void Room::setDescription(const string aDescription) {
 	description = aDescription;
 }
 
@@ -56,24 +56,25 @@ int Room::isDoor(Directions dir) const {
 	else return roomIndex;
 }
 
+
 string Room::toString() const {
 	string result = "";
 
-	result += name + "\n";
+	result += "======== " + name + " ========\n";
 	result += description + "\n";
-	result += "Objetos en la habitacion: \n";
+	result += "Items in the room: \n";
 	list<string> itemsNames = getItems();
 	for (list<string>::const_iterator it = itemsNames.begin(); it != itemsNames.end(); ++it)
 		result += *it + "\n";
-	result += "Direcciones a las que puedes navegar: \n";
+	result += "Directions you can travel to: \n";
 	for (list<Door>::const_iterator it = doors.begin(); it != doors.end(); ++it)
 	{
 		switch ((*it).first)
 		{
-		case(NORTH) : result += "Norte\n"; break;
-		case(SOUTH) : result += "Sur\n"; break;
-		case(EAST) : result += "Este\n"; break;
-		case(WEST) : result += "Oeste\n"; break;
+		case(NORTH) : result += "North\n"; break;
+		case(SOUTH) : result += "South\n"; break;
+		case(EAST) : result += "East\n"; break;
+		case(WEST) : result += "West\n"; break;
 		}
 	}
 

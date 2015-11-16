@@ -19,3 +19,21 @@ Item Character::dropItem(const std::string itemName) {
 	
 	return result;
 }
+
+const std::string Character::readItem(const std::string itemName) const {
+	Item result = c_inventory.getItem(itemName);
+	if (result.first != "NOITEM")
+	{
+		bool readable = false;
+		for (available_actions::const_iterator it = result.second.begin(); it != result.second.end() && !readable; ++it)
+		{
+			if (*it == READ)
+				readable = true;
+		}
+
+		if (readable)
+			return result.first;
+	}
+	else return "";
+
+}

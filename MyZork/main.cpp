@@ -16,4 +16,4 @@ int main() {
 	return 0;
 }
 
-//TODO: game Class
+//TODO: Item class
