@@ -28,7 +28,11 @@ private:
 	void doRead();
 	void doBreak();
 	void doSee();
+	void doOpen();
+	void doFill();
 	void doNothing();
+
+	bool checkAction(const Item item, const Actions action);
 public:
 	Game();
 	~Game();

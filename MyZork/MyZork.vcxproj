@@ -80,18 +80,22 @@
   <ItemGroup>
     <ClCompile Include="character.cpp" />
     <ClCompile Include="corridor.cpp" />
+    <ClCompile Include="diningHall.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hallRoom.cpp" />
     <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="lockerRoom.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="room.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
     <ClInclude Include="corridor.h" />
+    <ClInclude Include="diningHall.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="hallRoom.h" />
     <ClInclude Include="inventory.h" />
+    <ClInclude Include="lockerRoom.h" />
     <ClInclude Include="room.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

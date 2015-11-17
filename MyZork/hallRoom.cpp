@@ -1,4 +1,5 @@
 #include "hallRoom.h"
+#include <iostream>
 
 HallRoom::HallRoom() {
 	current_state = INITIAL;
@@ -28,15 +29,17 @@ string HallRoom::toString() const {
 	case NO_NOTE: result += "in the north wall you can see yourself reflected in a human-sized mirror.\n"; break;
 	case BROKEN_MIRROR: result += "The small table broke along with the mirror, you can still reach the note. \n"
 		"You can see the broken glasses of the mirror lying around the floor,\n"
-		"in the wall where the mirror was supposed to be, you can read:\n"
-		"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
-		"If only I had some way to look for it...\n"; break;
+		"in the wall where the mirror was supposed to be,\n"
+		"carved in the wall, you can read:\n"
+		"\"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
+		"If only I had some way to look for it...\"\n"; break;
 	case FULL: result += "The small table broke along with the mirror. \n"
 		"You can see the broken glasses of the mirror lying around the floor,\n"
-		"in the wall where the mirror was supposed to be, you can read:\n"
-		"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
-		"If only I had some way to look for it...\n"; break;
-	default: ""; break;
+		"in the wall where the mirror was supposed to be,\n"
+		"carved in the wall, you can read:\n"
+		"\"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
+		"If only I had some way to look for it...\"\n"; break;
+	default: break;
 	}
 
 	return result;
@@ -52,7 +55,23 @@ void HallRoom::changeState(const string itemName) {
 	else if (itemName.compare("mirror") == 0)
 	{
 		if (current_state == NO_NOTE)
+		{
 			current_state = FULL;
-		else current_state = BROKEN_MIRROR;
+			std::cout << "The small table broke along with the mirror. \n"
+				"You can see the broken glasses of the mirror lying around the floor,\n"
+				"in the wall where the mirror was supposed to be,\n"
+				"carved in the wall, you can read:\n"
+				"\"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
+				"If only I had some way to look for it...\"\n";
+		} 
+		else{
+			current_state = BROKEN_MIRROR;
+			std::cout << "The small table broke along with the mirror, you can still reach the note. \n"
+				"You can see the broken glasses of the mirror lying around the floor,\n"
+				"in the wall where the mirror was supposed to be,\n"
+				"carved in the wall, you can read:\n"
+				"\"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
+				"If only I had some way to look for it...\"\n";
+		}
 	}
 }
