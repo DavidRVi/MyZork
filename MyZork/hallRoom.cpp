@@ -31,7 +31,7 @@ string HallRoom::toString() const {
 		"You can see the broken glasses of the mirror lying around the floor,\n"
 		"in the wall where the mirror was supposed to be,\n"
 		"carved in the wall, you can read:\n"
-		"\"UpDownDownRightLeftB... I CAN'T STAND THIS ANYMORE!\n"
+		"\"BDownUpLeftLeftRightA... I CAN'T STAND THIS ANYMORE!\n"
 		"If only I had some way to look for it...\"\n"; break;
 	case FULL: result += "The small table broke along with the mirror. \n"
 		"You can see the broken glasses of the mirror lying around the floor,\n"
@@ -41,7 +41,10 @@ string HallRoom::toString() const {
 		"If only I had some way to look for it...\"\n"; break;
 	default: break;
 	}
-
+	list<string> items = dropped_items.getItemsNames();
+	for (list<string>::const_iterator it = items.begin(); it != items.end(); ++it)
+		result += "There is a " + *it + " on the floor.\n";
+	result += "\n\n";
 	return result;
 }
 

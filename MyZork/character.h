@@ -14,6 +14,7 @@ public:
 	Item dropItem(const std::string itemName);
 	const std::string readItem(const std::string itemName) const;
 	Item getItem(const std::string itemName) const;
+	void removeItem(const std::string itemName);
 };
 
 #endif

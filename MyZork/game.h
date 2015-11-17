@@ -14,11 +14,11 @@ private:
 	string verb, object;
 	bool gameActive;
 
-	void initializeGame();
-	void playGame();
-	void processUserInput(const string userInput);
-	void doAction(const Actions action);
-	string describeRoom(const int roomIndex);
+	void initializeGame();								//creates rooms, items, doors and such
+	void playGame();									//game loop
+	void processUserInput(const string userInput);		//splits the user input in two words for the game to understand
+	void doAction(const Actions action);				//execute a game action
+	string describeRoom(const int roomIndex);			//Returns a string corresponding to the room description
 	Directions getDirection(const string object);		//Get a Direction corresponding to a string describing the direction
 
 	void doGo();
@@ -29,10 +29,14 @@ private:
 	void doBreak();
 	void doSee();
 	void doOpen();
+	void doPut();
+	void doUse();
 	void doFill();
 	void doNothing();
 
-	bool checkAction(const Item item, const Actions action);
+	void enterCode();									//Function that checks if the secret code is correct
+
+	bool checkAction(const Item item, const Actions action);	//returns true if the given item can do the given action; false otherwise
 public:
 	Game();
 	~Game();

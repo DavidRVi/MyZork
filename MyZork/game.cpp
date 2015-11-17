@@ -2,12 +2,13 @@
 #include "corridor.h"
 #include "hallRoom.h"
 #include "diningHall.h"
-#include "lockerRoom.h";
+#include "lockerRoom.h"
+#include "kitchen.h"
 #include <iostream>
 #include <sstream>
 #include <list>
 
-#define VERSION 0.4
+#define VERSION 0.9
 
 Game::Game(){
 
@@ -34,6 +35,9 @@ void Game::initializeGame() {
 		"and a door on the west"));
 	room_list.push_back(new DiningHall());
 	room_list.push_back(new LockerRoom());
+	room_list.push_back(new Kitchen());
+	room_list.push_back(new Room("Entrance Hall", "You're in a wide room with a big ivory door at the east side, \nthere's a terminal that says: \"ENTER THE CODE\" and a keyboard to use.\n"
+		"There's another door at the west side"));
 
 	room_list[0]->addDoor(Door(SOUTH, 1));
 	room_list[0]->addDoor(Door(EAST, 2));
@@ -51,6 +55,11 @@ void Game::initializeGame() {
 	room_list[4]->addDoor(Door(NORTH, 1));
 	room_list[4]->addDoor(Door(EAST, 5));
 
+	room_list[5]->addDoor(Door(NORTH, 3));
+	room_list[5]->addDoor(Door(WEST, 4));
+
+	room_list[6]->addDoor(Door(WEST, 3));
+
 	room_list[0]->addItem(Item("note", { PICK, DROP, READ }));
 	room_list[0]->addItem(Item("mirror", { BREAK }));
 
@@ -62,6 +71,11 @@ void Game::initializeGame() {
 
 	room_list[4]->addItem(Item("locker", { OPEN }));
 
+	room_list[5]->addItem(Item("kitchen", { USE }));
+	room_list[5]->addItem(Item("pot", { PUT }));
+
+	room_list[6]->addItem(Item("terminal", { USE }));
+	room_list[6]->addItem(Item("keyboard", { USE }));
 
 	cout << "**********  Welcome to MyZork, version " << VERSION << " ********** \n\n";
 }
@@ -105,6 +119,8 @@ void Game::processUserInput(const string userInput) {
 	else if (verb == "break") current_action = BREAK;
 	else if (verb == "open") current_action = OPEN;
 	else if (verb == "fill") current_action = FILL;
+	else if (verb == "use") current_action = USE;
+	else if (verb == "put") current_action = PUT;
 	else if (verb == "quit") current_action = QUIT;
 }
 
@@ -120,6 +136,8 @@ void Game::doAction(const Actions action) {
 	case SEE: doSee(); break;
 	case OPEN: doOpen(); break;
 	case FILL: doFill(); break;
+	case USE: doUse(); break;
+	case PUT: doPut(); break;
 	case NOACTION: doNothing(); break;
 	default: doNothing();
 	}
@@ -202,8 +220,8 @@ Directions Game::getDirection(const string object)
 void Game::doPick() {
 	if (object != verb)
 	{
-		Item toPick = room_list[current_room]->getPickItem(object);
-		if (toPick.first != "NOITEM")
+		Item toPick = room_list[current_room]->getItem(object);
+		if (checkAction(toPick, PICK))
 		{
 			toPick = room_list[current_room]->removeItem(object);
 			player->pickItem(toPick);
@@ -223,10 +241,19 @@ void Game::doPick() {
 void Game::doDrop() {
 	if (object != verb)
 	{
-		Item toDrop = player->dropItem(object);
+		
+		Item toDrop = player->getItem(object);
 		if (toDrop.first != "NOITEM")
-			room_list[current_room]->addItem(toDrop);
-		else cout << "You can't drop that item";
+		{
+			if (checkAction(toDrop, DROP))
+			{
+				player->dropItem(toDrop.first);
+				room_list[current_room]->dropItem(toDrop);
+				cout << "You dropped the " << toDrop.first << endl;
+			}
+			else cout << "You can't drop that item." << endl;
+		}
+		else cout << "You don't have that item." << endl;
 	}
 	else {
 		cout << "Which item do you want to drop?" << endl;
@@ -252,6 +279,9 @@ void Game::doSee() {
 			list<string> inv = room_list[current_room]->getItems();
 			for (list<string>::const_iterator it = inv.begin(); it != inv.end(); ++it)
 				cout << *it << endl;
+			inv = room_list[current_room]->getDroppedItems();
+			for (list<string>::const_iterator it = inv.begin(); it != inv.end(); ++it)
+				cout << *it << endl;
 		}
 		else cout << "You can't do that" << endl;
 
@@ -274,13 +304,13 @@ void Game::doRead() {
 			{
 				if (toRead.first.compare("note") == 0)
 				{
-					cout << "Hi there, \n"
+					cout << "\"Hi there, \n"
 						"Maybe you're wondering why you're here, maybe not.\n"
 						"Or Maybe this is all a dream and maybe, just maybe, you're trapped \n"
 						"inside a manor and need to find your own way out.\n"
-						"Good Luck.\n" << endl;
+						"Good Luck.\"\n" << endl;
 				}
-				else if (toRead.first.compare("paper") == 0) cout << "Sometimes, vapor can help you see through things you don't see otherwise.\n";
+				else if (toRead.first.compare("paper") == 0) cout << "\"Sometimes, vapor can help you see through things you don't see otherwise.\"\n";
 			}
 			else cout << "You can't read that" << endl;
 		}
@@ -349,6 +379,11 @@ void Game::doFill() {
 				{
 					room_list[current_room]->changeState(toFill.first);
 					cout << "You filled the " << toFill.first << " with " << object << endl;
+					if (toFill.first.compare("bottle") == 0)
+					{
+						player->removeItem("bottle");
+						player->pickItem(Item("water", { PUT }));
+					}
 				}
 				else
 				{
@@ -365,7 +400,85 @@ void Game::doFill() {
 		cout << "What do you want to fill?" << endl;
 		cout << ">";
 		getline(cin, object);
-		doBreak();
+		doFill();
+	}
+}
+
+void Game::doUse() {
+	if (object != verb)
+	{
+		if ((object.compare("terminal") || object.compare("keyboard")) && current_room == 6)
+		{
+			enterCode();
+			return;
+		}
+		Item toUse = player->getItem(object);
+		if (toUse.first != "NOITEM")
+		{
+			if (checkAction(toUse, USE))
+			{
+				
+				cout << "What to do you want to use the " << object << " with?" << endl;
+				cout << ">";
+				getline(cin, object);
+				Item result = room_list[current_room]->getItem(object);
+				if (checkAction(result, USE))
+				{
+					room_list[current_room]->changeState(toUse.first);
+				}
+				else cout << "You can't use the " << toUse.first << " with the " << object << endl;
+			}
+			else cout << "You can't use that. " << endl;
+		}
+		else cout << "You don't have a " << object << endl;
+	}
+	else {
+		cout << "What do you want to use?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doUse();
+	}
+}
+
+void Game::doPut() {
+	if (object != verb)
+	{
+		Item toPut = player->getItem(object);
+		if (toPut.first != "NOITEM")
+		{
+			if (checkAction(toPut, PUT))
+			{
+				cout << "Where do you want to put the " << object << " in?" << endl;
+				cout << ">";
+				getline(cin, object);
+				Item result = room_list[current_room]->getItem(object);
+
+				if (checkAction(result, PUT))
+				{
+					room_list[current_room]->changeState(toPut.first);
+					cout << "You put the " << toPut.first << " in the " << object << endl;
+					if (toPut.first.compare("water") == 0)
+					{
+						player->removeItem("water");
+						player->pickItem(Item("bottle", { PICK, DROP, FILL }));
+					}
+				}
+				else
+				{
+					cout << "You can't put the " << toPut.first << " in the " << object << endl;
+					return;
+				}
+			}
+			else cout << "You can't put a " << toPut.first << endl;
+
+		}
+		else cout << "You don't have a " << object << endl;
+	}
+	else {
+		cout << "What do you want to put?" << endl;
+		cout << ">";
+		getline(cin, object);
+		doPut();
 	}
 }
 
@@ -383,4 +496,19 @@ bool Game::checkAction(const Item item, const Actions action)
 	}
 
 	return canAction;
+}
+
+void Game::enterCode() {
+
+	cout << "\nWhat are you going to type? [Tip: Broken Mirror]\n";
+	cout << ">";
+	getline(cin, verb);
+	if (verb.compare("UpUpDownDownLeftRightLeftRightBA") == 0)
+	{
+		cout << "\nYou did it!! The great ivory door opens and a wave of sun light\n"
+			"invades the room, leaving you blind for a moment.\n "
+			"You step outside with pride\n and wonder what awaits you from now on...\n" << endl;
+		gameActive = false;
+	}
+	else cout << "The code is not correct." << endl;
 }

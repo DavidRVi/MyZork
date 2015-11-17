@@ -20,7 +20,10 @@ string Corridor::toString() const {
 	case NO_HAMMER: break;
 	default: break;
 	}
-
+	list<string> items = dropped_items.getItemsNames();
+	for (list<string>::const_iterator it = items.begin(); it != items.end(); ++it)
+		result += "There is a " + *it + " on the floor.\n";
+	result += "\n\n";
 	return result;
 }
 

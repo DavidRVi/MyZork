@@ -41,3 +41,7 @@ const std::string Character::readItem(const std::string itemName) const {
 Item Character::getItem(const std::string itemName) const {
 	return c_inventory.getItem(itemName);
 }
+
+void Character::removeItem(const std::string itemName){
+	c_inventory.removeItem(itemName);
+}

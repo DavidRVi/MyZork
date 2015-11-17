@@ -15,6 +15,7 @@ protected:
 	string description;
 
 	Inventory room_inventory;
+	Inventory dropped_items;
 	list<Door> doors;
 public:
 	Room(){};
@@ -22,8 +23,10 @@ public:
 	Room(const string aName, const string aDescription);
 	void setDescription(const string aDescription);
 	void addItem(const Item item);		//Add a given item
+	void dropItem(const Item item);		// Add a given item to the dropped_items list.
 	void addDoor(const Door door); //Add a door in a direction, and check there's no door before in that direction
 	list<string> getItems() const;
+	list<string> getDroppedItems() const;
 	list<Door> getDoors() const;
 	virtual string toString() const;
 	Item removeItem(const string itemName); //Removes an item from room inventory and return it.
